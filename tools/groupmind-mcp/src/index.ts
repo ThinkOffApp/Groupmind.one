@@ -12,9 +12,9 @@ import fetch from "node-fetch";
 const SERVER_NAME = "groupmind-mcp";
 const SERVER_VERSION = "0.1.0";
 
-// antfarm.world was the old hostname and no longer resolves; anything still
-// pointed at it fails with ENOTFOUND. Override with GROUPMIND_API_BASE to talk
-// to a self-hosted instance, e.g. http://localhost:3005/api/v1.
+// A previous hostname no longer resolves; anything still pointed at it fails
+// with ENOTFOUND. Override with GROUPMIND_API_BASE to talk to a self-hosted
+// instance, e.g. http://localhost:3005/api/v1.
 const API_BASE =
   process.env.GROUPMIND_API_BASE || "https://groupmind.one/api/v1";
 

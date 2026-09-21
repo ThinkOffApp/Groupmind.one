@@ -42,7 +42,7 @@ async function getSessionUser(request?: Request) {
 // This used to be a fixed list of this project's own domains. On a self-hosted
 // instance that meant the operator's own origin was never on it and every
 // browser upload fell back to an origin they do not control. It also still
-// contained `antfarm.world`, a domain that no longer resolves: a lapsed domain
+// contained a previous hostname that no longer resolves: a lapsed domain
 // sitting in a credentialed CORS allowlist becomes an allowed origin for
 // whoever registers it next.
 //
