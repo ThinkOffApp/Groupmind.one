@@ -1,0 +1,224 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+body{background:#111;color:#ddd;font:13px system-ui;margin:0}
+#scroll{height:400px;overflow-y:auto;border:1px solid #444;margin:8px}
+.row{padding:8px;border-bottom:1px solid #222}
+.me{background:#1a2a12}
+pre{padding:8px;color:#9f6}
+</style></head><body>
+<!-- HOW TO RUN: open this file in a browser. No build, no server.
+
+     Why it exists: the arrows' unit tests passed on a version that still
+     stalled, because they fed anchor positions with no height and a cursor
+     that was never where a real scrollIntoView leaves it. @codexmb: "verify
+     repeated up/down with different-height rows in the browser; pure number
+     tests miss this." They did.
+
+     It compares three strategies and PRINTS A VERDICT. A must stall, or the
+     check cannot fail and proves nothing. -->
+<!-- Real DOM check for jumpToAdjacentMention's geometry. @codexmb: "verify
+     repeated up/down with different-height rows in the browser; pure number
+     tests miss this" -- and they did. -->
+<div id="scroll"></div><pre id="out"></pre>
+<script>
+const el = document.getElementById('scroll');
+// Deliberately uneven: one-liners, a tall code block, a medium paragraph.
+const HEIGHTS = [28, 300, 45, 160, 28, 420, 60, 28, 210, 90];
+const FOR_ME  = [0, 1, 3, 5, 6, 9];
+HEIGHTS.forEach((h, i) => {
+  const d = document.createElement('div');
+  d.className = 'row' + (FOR_ME.includes(i) ? ' me' : '');
+  d.style.height = h + 'px';
+  d.dataset.msgId = 'm' + i;
+  if (FOR_ME.includes(i)) d.dataset.forMe = '1';
+  d.textContent = 'row ' + i + '  (' + h + 'px)' + (FOR_ME.includes(i) ? '  FOR ME' : '');
+  el.appendChild(d);
+});
+
+// The shipped helper, copied verbatim.
+function pickAdjacentAnchor(positions, current, direction, tolerance = 8) {
+  if (!positions.length) return null;
+  if (direction === 'prev') {
+    for (let i = positions.length - 1; i >= 0; i--) if (positions[i] < current - tolerance) return i;
+    return null;
+  }
+  for (let i = 0; i < positions.length; i++) if (positions[i] > current + tolerance) return i;
+  return null;
+}
+
+let cursorId = null;   // identity cursor, as the room now keeps it
+let pendingId = null;  // the row a smooth scroll is still travelling towards
+// The production listeners, verbatim in behaviour: real user input drops the
+// cursor immediately, even while a programmatic smooth scroll is still running.
+// The harness used to set cursorId = null by hand, which meant it could never
+// have caught a listener that did not fire (@codexmb).
+const dropCursor = () => { cursorId = null; pendingId = null; };
+// Arrival clears the pending target, exactly as the room's scroll handler does.
+el.addEventListener('scroll', () => {
+  if (!pendingId) return;
+  const row = el.querySelector('[data-msg-id="' + pendingId + '"]');
+  if (!row) return;
+  const c = centresOf([row])[0];
+  if (Math.abs(c - (el.scrollTop + el.clientHeight / 2)) <= el.clientHeight / 2) pendingId = null;
+}, { passive: true });
+el.addEventListener('wheel', dropCursor, { passive: true });
+el.addEventListener('touchmove', dropCursor, { passive: true });
+el.addEventListener('keydown', (ev) => {
+  if (['ArrowUp','ArrowDown','PageUp','PageDown','Home','End',' '].includes(ev.key)) dropCursor();
+});
+function stepFromAnchorId(ids, currentId, direction) {
+  if (!currentId) return -1;
+  const at = ids.indexOf(currentId);
+  if (at === -1) return -1;
+  const n = direction === 'prev' ? at - 1 : at + 1;
+  if (n < 0 || n >= ids.length) return null;
+  return n;
+}
+// Container-relative: offsetTop follows offsetParent, which need not be the
+// scroll container (@codexmb).
+function centresOf(rows) {
+  const top = el.getBoundingClientRect().top;
+  return rows.map(r => {
+    const b = r.getBoundingClientRect();
+    return b.top - top + el.scrollTop + b.height / 2;
+  });
+}
+function press(direction, useTops) {
+  const rows = Array.from(el.querySelectorAll('[data-msg-id][data-for-me="1"]'));
+  const current = el.scrollTop + el.clientHeight / 2;
+  const positions = useTops === true ? rows.map(r => r.offsetTop) : centresOf(rows);
+  let idx;
+  if (useTops === 'identity') {
+    const cur = cursorId ? rows.find(r => r.dataset.msgId === cursorId) : null;
+    if (cur) {
+      const away = Math.abs(centresOf([cur])[0] - current);
+      if (away <= el.clientHeight / 2) { if (pendingId === cur.dataset.msgId) pendingId = null; }
+      else if (pendingId !== cur.dataset.msgId) cursorId = null;   // moved, no input event
+    }
+    idx = stepFromAnchorId(rows.map(r => r.dataset.msgId), cursorId, direction);
+    if (idx === -1) idx = pickAdjacentAnchor(centresOf(rows), current, direction);
+  } else {
+    idx = pickAdjacentAnchor(positions, current, direction);
+  }
+  if (idx == null || idx === -1) return null;
+  cursorId = rows[idx].dataset.msgId;
+  pendingId = rows[idx].dataset.msgId;
+  if (!window.__noScroll) rows[idx].scrollIntoView({ block: 'center', behavior: 'instant' });
+  return rows[idx].dataset.msgId;
+}
+
+function walk(useTops) {
+  const log = [];
+  cursorId = null;
+  el.scrollTop = el.scrollHeight;            // start at the bottom
+  let last = null, stalls = 0;
+  for (let n = 0; n < 6; n++) {
+    const id = press('prev', useTops);
+    if (id === null) { log.push('prev -> none'); break; }
+    if (id === last) { stalls++; log.push('prev -> ' + id + '  <-- STALLED'); }
+    else log.push('prev -> ' + id);
+    last = id;
+  }
+  for (let n = 0; n < 6; n++) {
+    const id = press('next', useTops);
+    if (id === null) { log.push('next -> none'); break; }
+    if (id === last) { stalls++; log.push('next -> ' + id + '  <-- STALLED'); }
+    else log.push('next -> ' + id);
+    last = id;
+  }
+  return { stalls, log };
+}
+
+// Scroll away by hand between presses. The cursor must NOT survive it: the
+// arrows have to step from where the reader is now.
+async function manualScrollScenario() {
+  const log = [];
+  cursorId = null; pendingId = null;
+  el.scrollTop = el.scrollHeight;
+  await frame();
+  const a = press('prev', 'identity');          // lands somewhere near the bottom
+  log.push('press prev -> ' + a);
+  // A REAL wheel event immediately after the press -- the case a 1200ms
+  // ownership window would have swallowed. No manual cursor clearing here.
+  await frame();
+  el.scrollTop = 0;
+  el.dispatchEvent(new WheelEvent('wheel', { deltaY: -400, bubbles: true }));
+  await frame();
+  log.push('cursor after a real wheel event: ' + (cursorId === null ? 'CLEARED' : 'STILL ' + cursorId));
+  const b = press('next', 'identity');
+  log.push('user scrolls to top, press next -> ' + b);
+  // The property under test is NOT "which row" -- it is "did it step from the
+  // reader's new position instead of continuing the old sequence". From m6 the
+  // stale-anchor answer is m9. From the top of the container the viewport
+  // centre sits inside m1, so the correct answer is the first anchor past it.
+  // My first version of this check asserted m0/m1 and failed a CORRECT result:
+  // the assertion encoded my expectation rather than the property.
+  const staleAnswer = 'm9';
+  const ok = b !== null && b !== staleAnswer;
+  log.push(ok ? 'stepped from the reader (' + b + '), not the stale anchor (' + staleAnswer + ')'
+              : 'WRONG: continued the old sequence');
+  return { ok, log };
+}
+
+// Dragging the scrollbar fires scroll but NO wheel/touch/key event, so the
+// listeners cannot help. The press-time check is what catches it.
+const frame = () => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+async function scrollbarDragScenario() {
+  const log = [];
+  cursorId = null; pendingId = null;
+  el.scrollTop = el.scrollHeight;
+  await frame();
+  const a = press('prev', 'identity');
+  log.push('press prev -> ' + a);
+  // Scroll events are asynchronous: without letting a frame pass, NO listener
+  // has run yet and the harness would be testing a state the browser never
+  // shows a user. A drag and the click after it are always frames apart.
+  await frame();
+  el.scrollTop = 0;                     // scrollbar drag: scroll only, no input event
+  await frame();
+  const b = press('next', 'identity');
+  const ok = b !== null && b !== 'm9';
+  log.push('drag to top (no input event), press next -> ' + b);
+  log.push(ok ? 'press-time check caught the move' : 'WRONG: stepped from the stale anchor');
+  return { ok, log };
+}
+
+// Two arrow presses before the first animation finishes. __noScroll suppresses
+// the scroll so the target stays offscreen, which is what an in-flight smooth
+// scroll looks like to the second press (@codexmb).
+async function rapidDoublePressScenario() {
+  const log = [];
+  cursorId = null; pendingId = null;
+  el.scrollTop = el.scrollHeight;
+  await frame();
+  const a = press('prev', 'identity');
+  log.push('press 1 -> ' + a);
+  window.__noScroll = true;                     // the animation has not landed yet
+  const b = press('prev', 'identity');
+  window.__noScroll = false;
+  log.push('press 2 while still travelling -> ' + b);
+  const ok = b !== null && b !== a;
+  log.push(ok ? 'stepped on from ' + a + ', did not restart from the animation position'
+              : 'WRONG: discarded the in-flight target');
+  return { ok, log };
+}
+
+const broken   = walk(true);         // the version codexmb flagged: row TOPS
+const centres  = walk(false);        // centres only -- better, still stalls at the ends
+const identity = walk('identity');   // what ships now: id cursor + geometry fallback
+let manual, drag, rapid;
+(async () => {
+manual = await manualScrollScenario();
+drag   = await scrollbarDragScenario();
+rapid  = await rapidDoublePressScenario();
+document.getElementById('out').textContent =
+  'A. TOPS vs centred cursor (codexmb)  stalls=' + broken.stalls + '\n  ' + broken.log.join('\n  ') +
+  '\n\nB. CENTRES only                      stalls=' + centres.stalls + '\n  ' + centres.log.join('\n  ') +
+  '\n\nC. IDENTITY cursor (shipping)        stalls=' + identity.stalls + '\n  ' + identity.log.join('\n  ') +
+  '\n\nD. MANUAL SCROLL between presses   ' + (manual.ok ? 'OK' : 'FAILED') + '\n  ' + manual.log.join('\n  ') +
+  '\n\nE. SCROLLBAR DRAG (no input event)  ' + (drag.ok ? 'OK' : 'FAILED') + '\n  ' + drag.log.join('\n  ') +
+  '\n\nF. TWO PRESSES MID-ANIMATION       ' + (rapid.ok ? 'OK' : 'FAILED') + '\n  ' + rapid.log.join('\n  ') +
+  '\n\nVERDICT: ' + (broken.stalls > 0 && identity.stalls === 0 && manual.ok && drag.ok && rapid.ok
+      ? 'control FIRES on A; C never stalls; D drops on real input; E catches a silent drag; F survives a double press'
+      : 'INCONCLUSIVE');
+})();
+</script></body></html>

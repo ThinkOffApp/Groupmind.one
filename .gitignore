@@ -1,0 +1,84 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+# NOT "/node_modules": a leading slash anchors to the repo root, so every
+# nested workspace kept its own. tools/groupmind-mcp/node_modules was tracked -
+# 2,699 files, 53 MB, including two 10 MB platform binaries.
+node_modules/
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+.env*
+
+# vercel
+.vercel
+# pulled Vercel env files (real prod/preview secrets). .env* does NOT match
+# these because the filename starts with ".vercel", not ".env"
+.vercel.env*
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# One-off scratch files left over from an earlier migration.
+#
+# These were once the blanket patterns `*.js`, `*.mjs`, `*.sh` and `*.jsonl`.
+# In a JavaScript project that is a trap: a contributor adds a script, `git add`
+# silently skips it, and the missing file only surfaces when someone else's
+# checkout fails to build. The named files below are what those patterns were
+# actually there to hide.
+.env
+*.log
+*.ts.bak
+*.tsx.bak
+*.jsonl
+post_antfarm_api.ts
+fetch_gemini_key.ts
+check_agent_key.ts
+ack_static_confs.ts
+ide-agent-queue.jsonl
+server.log
+.env*.local
+
+# Build output of the bundled MCP server.
+tools/groupmind-mcp/dist/
+
+# supabase CLI cache
+supabase/.temp/
+
+# --- self-host stack ---------------------------------------------------
+# `.env*` above is a deliberate catch-all and must stay one. Re-include only
+# the placeholder example. NEVER un-ignore a real .env.
+!.env.example
+
+# A local deploy helper, not part of the distribution: it hardcodes one
+# machine's absolute path and pushes to this project's own origin. Ignored by
+# NAME rather than by a `*.sh` blanket, so a contributor's new script is not
+# swallowed along with it.
+scripts/deploy.sh

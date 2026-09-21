@@ -1,0 +1,83 @@
+_format_version: "2.1"
+_transform: true
+
+# Kong fronts the Supabase services on one origin so that supabase-js can talk
+# to them the way it talks to hosted Supabase. NEXT_PUBLIC_SUPABASE_URL points
+# here (default http://localhost:8000).
+#
+# Two consumers map to the two API keys:
+#   anon          - shipped to the browser, RLS applies
+#   service_role  - server-side only, bypasses RLS. Never expose it.
+
+consumers:
+  - username: anon
+    keyauth_credentials:
+      - key: $SUPABASE_ANON_KEY
+  - username: service_role
+    keyauth_credentials:
+      - key: $SUPABASE_SERVICE_KEY
+
+acls:
+  - consumer: anon
+    group: anon
+  - consumer: service_role
+    group: admin
+
+services:
+  # ---- Auth (GoTrue) ------------------------------------------------------
+  # Open: sign-up, sign-in and the OAuth callback must be reachable without an
+  # apikey header already being validated by Kong.
+  - name: auth-v1-open
+    url: http://auth:9999/
+    routes:
+      - name: auth-v1-open
+        strip_path: true
+        paths:
+          - /auth/v1/
+    plugins:
+      - name: cors
+
+  # ---- PostgREST ----------------------------------------------------------
+  - name: rest-v1
+    url: http://rest:3000/
+    routes:
+      - name: rest-v1-all
+        strip_path: true
+        paths:
+          - /rest/v1/
+    plugins:
+      - name: cors
+      - name: key-auth
+        config:
+          hide_credentials: true
+          key_names:
+            - apikey
+      - name: acl
+        config:
+          hide_groups_header: true
+          allow:
+            - admin
+            - anon
+
+  # ---- Realtime -----------------------------------------------------------
+  - name: realtime-v1-ws
+    url: http://realtime:4000/socket
+    protocol: http
+    routes:
+      - name: realtime-v1-ws
+        strip_path: true
+        paths:
+          - /realtime/v1/
+    plugins:
+      - name: cors
+      - name: key-auth
+        config:
+          hide_credentials: false
+          key_names:
+            - apikey
+      - name: acl
+        config:
+          hide_groups_header: true
+          allow:
+            - admin
+            - anon

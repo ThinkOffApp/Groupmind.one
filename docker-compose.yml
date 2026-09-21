@@ -1,0 +1,272 @@
+# GroupMind - fully local self-host stack.
+#
+#   docker compose up
+#
+# Brings up Postgres + the Supabase services the app talks to (auth, REST,
+# realtime, behind a Kong gateway), the Next.js app, and optionally a local
+# LLM. Nothing in this file points at Vercel or at hosted Supabase.
+#
+# The hosted deployment is unaffected: it reads the same env var names from
+# its own environment, so the cloud path stays available for anyone who does
+# not self-host.
+#
+# STATUS: this file has NOT been executed end to end. Docker is not installed
+# on the machine where it was authored, so `docker compose up` was never run
+# against it. Treat it as a reviewed draft, not a verified stack.
+
+name: groupmind
+
+services:
+  # ---------------------------------------------------------------- database
+  db:
+    image: supabase/postgres:15.8.1.060
+    container_name: groupmind-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_HOST: /var/run/postgresql
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: ${POSTGRES_DB:-postgres}
+      POSTGRES_USER: supabase_admin
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET in .env}
+      JWT_EXP: ${JWT_EXPIRY:-3600}
+    ports:
+      # Exposed so you can psql into it while developing. Remove to close it off.
+      - "${POSTGRES_PORT:-54322}:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      # Gives supabase_auth_admin / authenticator a password. Without this the
+      # image leaves them password-less, GoTrue cannot connect, and the whole
+      # stack stalls behind it. Sorts after the image's own migrate.sh.
+      - ./selfhost/db-init-roles.sh:/docker-entrypoint-initdb.d/zz-role-passwords.sh:ro
+    healthcheck:
+      # Over TCP on purpose: during first-boot initdb the server listens only
+      # on the unix socket, so a socket pg_isready reports "healthy" while the
+      # database is still being built and dependents start too early.
+      test: ["CMD", "pg_isready", "-h", "127.0.0.1", "-U", "supabase_admin", "-d", "${POSTGRES_DB:-postgres}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+
+  # Applies the repo's SQL migrations once the database is healthy.
+  # Runs to completion and exits 0; `depends_on: service_completed_successfully`
+  # keeps the app from booting against an empty schema.
+  migrate:
+    image: postgres:15-alpine
+    container_name: groupmind-migrate
+    depends_on:
+      # NOT just `db`: user_profiles, room_members.user_id and
+      # xfb_user_profiles declare foreign keys to auth.users, and that table is
+      # created by GoTrue's own migrations on its first boot - not by the
+      # Postgres image. Migrating before auth is healthy fails with
+      # 'relation "auth.users" does not exist'.
+      auth:
+        condition: service_healthy
+    environment:
+      PGPASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      PGHOST: db
+      PGPORT: 5432
+      PGUSER: supabase_admin
+      PGDATABASE: ${POSTGRES_DB:-postgres}
+      # Who installed this. selfhost/gen-env.sh asks; the seed authors its demo
+      # content as this agent instead of as a stranger's.
+      GROUPMIND_OWNER_NAME: ${GROUPMIND_OWNER_NAME:-Owner}
+      GROUPMIND_AGENT_HANDLES: ${GROUPMIND_AGENT_HANDLES:-agent-1}
+    volumes:
+      - ./supabase/migrations:/migrations/supabase:ro
+      - ./migrations:/migrations/legacy:ro
+      - ./selfhost/migrate.sh:/migrate.sh:ro
+    entrypoint: ["/bin/sh", "/migrate.sh"]
+    restart: "no"
+
+  # ------------------------------------------------------------------- auth
+  auth:
+    image: supabase/gotrue:v2.174.0
+    container_name: groupmind-auth
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      GOTRUE_API_HOST: 0.0.0.0
+      GOTRUE_API_PORT: 9999
+      API_EXTERNAL_URL: ${SUPABASE_PUBLIC_URL:-http://localhost:8000}
+      GOTRUE_DB_DRIVER: postgres
+      GOTRUE_DB_DATABASE_URL: postgres://supabase_auth_admin:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-postgres}
+      GOTRUE_SITE_URL: ${NEXT_PUBLIC_BASE_URL:-http://localhost:3005}
+      GOTRUE_URI_ALLOW_LIST: ${ADDITIONAL_REDIRECT_URLS:-http://localhost:3005/**}
+      GOTRUE_DISABLE_SIGNUP: "false"
+      GOTRUE_JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET in .env}
+      GOTRUE_JWT_EXP: ${JWT_EXPIRY:-3600}
+      GOTRUE_JWT_DEFAULT_GROUP_NAME: authenticated
+      GOTRUE_JWT_ADMIN_ROLES: service_role
+      GOTRUE_JWT_AUD: authenticated
+      # Email/password signup with confirmation OFF, so a local user can sign
+      # up and be usable immediately without an SMTP server. See KNOWN
+      # LIMITATIONS in SELF-HOSTING.md - there is no mail delivery here.
+      GOTRUE_EXTERNAL_EMAIL_ENABLED: "true"
+      GOTRUE_MAILER_AUTOCONFIRM: "true"
+      GOTRUE_EXTERNAL_PHONE_ENABLED: "false"
+      GOTRUE_SMS_AUTOCONFIRM: "true"
+      # Google OAuth is OFF by default - it needs a public callback URL and a
+      # Google Cloud project. Fill the vars in .env to turn it on.
+      GOTRUE_EXTERNAL_GOOGLE_ENABLED: ${GOOGLE_OAUTH_ENABLED:-false}
+      GOTRUE_EXTERNAL_GOOGLE_CLIENT_ID: ${GOOGLE_OAUTH_CLIENT_ID:-}
+      GOTRUE_EXTERNAL_GOOGLE_SECRET: ${GOOGLE_OAUTH_SECRET:-}
+      GOTRUE_EXTERNAL_GOOGLE_REDIRECT_URI: ${SUPABASE_PUBLIC_URL:-http://localhost:8000}/auth/v1/callback
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9999/health"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  # -------------------------------------------------------------- PostgREST
+  rest:
+    image: postgrest/postgrest:v12.2.12
+    container_name: groupmind-rest
+    restart: unless-stopped
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    environment:
+      PGRST_DB_URI: postgres://authenticator:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-postgres}
+      PGRST_DB_SCHEMAS: ${PGRST_DB_SCHEMAS:-public,storage,graphql_public}
+      PGRST_DB_ANON_ROLE: anon
+      PGRST_JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET in .env}
+      PGRST_DB_USE_LEGACY_GUCS: "false"
+      PGRST_APP_SETTINGS_JWT_SECRET: ${JWT_SECRET}
+      PGRST_APP_SETTINGS_JWT_EXP: ${JWT_EXPIRY:-3600}
+    command: ["postgrest"]
+
+  # --------------------------------------------------------------- realtime
+  # The room view subscribes to postgres_changes. Without this service the app
+  # still works but new messages only appear via the SSE stream / on reload.
+  realtime:
+    image: supabase/realtime:v2.34.47
+    container_name: groupmind-realtime
+    restart: unless-stopped
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    environment:
+      PORT: 4000
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: supabase_admin
+      DB_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      DB_NAME: ${POSTGRES_DB:-postgres}
+      DB_AFTER_CONNECT_QUERY: "SET search_path TO _realtime"
+      DB_ENC_KEY: ${REALTIME_DB_ENC_KEY:-supabaserealtime}
+      API_JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET in .env}
+      SECRET_KEY_BASE: ${REALTIME_SECRET_KEY_BASE:?set REALTIME_SECRET_KEY_BASE in .env}
+      ERL_AFLAGS: -proto_dist inet_tcp
+      DNS_NODES: "''"
+      RLIMIT_NOFILE: "10000"
+      APP_NAME: realtime
+      SEED_SELF_HOST: "true"
+      RUN_JANITOR: "true"
+
+  # ---------------------------------------------------------- API gateway
+  # Single origin the app points NEXT_PUBLIC_SUPABASE_URL at. Routes
+  # /auth/v1 -> auth, /rest/v1 -> rest, /realtime/v1 -> realtime, and maps the
+  # anon / service_role API keys onto consumers.
+  kong:
+    image: kong:2.8.1
+    container_name: groupmind-kong
+    restart: unless-stopped
+    depends_on:
+      auth:
+        condition: service_healthy
+      rest:
+        condition: service_started
+    environment:
+      KONG_DATABASE: "off"
+      KONG_DECLARATIVE_CONFIG: /home/kong/kong.yml
+      KONG_DNS_ORDER: LAST,A,CNAME
+      KONG_PLUGINS: request-transformer,cors,key-auth,acl
+      KONG_NGINX_PROXY_PROXY_BUFFER_SIZE: 160k
+      KONG_NGINX_PROXY_PROXY_BUFFERS: 64 160k
+      SUPABASE_ANON_KEY: ${NEXT_PUBLIC_SUPABASE_ANON_KEY:?set NEXT_PUBLIC_SUPABASE_ANON_KEY in .env}
+      SUPABASE_SERVICE_KEY: ${SUPABASE_SERVICE_ROLE_KEY:?set SUPABASE_SERVICE_ROLE_KEY in .env}
+    # kong.yml carries $SUPABASE_ANON_KEY / $SUPABASE_SERVICE_KEY placeholders.
+    # Kong 2.8 does NOT expand those itself, so mounting the file straight at
+    # /home/kong/kong.yml made it register the LITERAL string "$SUPABASE_ANON_KEY"
+    # as the API key - every REST call then came back
+    # {"message":"Invalid authentication credentials"}. Expand it first, exactly
+    # as upstream Supabase's own self-host compose does.
+    # Upstream Supabase does this with `eval "echo \"$$(cat temp.yml)\""`, but that
+    # runs the WHOLE file through shell quoting and silently ate the quotes in
+    # `_format_version: "2.1"`, after which Kong refused to boot with
+    # `in '_format_version': expected a string`. Substituting only the two
+    # placeholders cannot corrupt the rest of the YAML.
+    entrypoint: >-
+      bash -c 'sed -e "s|\$$SUPABASE_ANON_KEY|$$SUPABASE_ANON_KEY|g"
+      -e "s|\$$SUPABASE_SERVICE_KEY|$$SUPABASE_SERVICE_KEY|g"
+      ~/temp.yml > ~/kong.yml && exec /docker-entrypoint.sh kong docker-start'
+    volumes:
+      - ./selfhost/kong.yml:/home/kong/temp.yml:ro
+    ports:
+      - "${SUPABASE_PORT:-8000}:8000"
+
+  # -------------------------------------------------------------------- app
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        # NEXT_PUBLIC_* are inlined at build time by Next.js, so they have to
+        # be present as build args, not only at runtime.
+        NEXT_PUBLIC_SUPABASE_URL: ${SUPABASE_PUBLIC_URL:-http://localhost:8000}
+        NEXT_PUBLIC_SUPABASE_ANON_KEY: ${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+        NEXT_PUBLIC_BASE_URL: ${NEXT_PUBLIC_BASE_URL:-http://localhost:3005}
+        NEXT_PUBLIC_CONTACT_EMAIL: ${NEXT_PUBLIC_CONTACT_EMAIL:-}
+    container_name: groupmind-app
+    restart: unless-stopped
+    depends_on:
+      kong:
+        condition: service_started
+    environment:
+      NODE_ENV: production
+      PORT: 3005
+      HOSTNAME: 0.0.0.0
+      # Browser-side calls go to the host-visible gateway URL.
+      NEXT_PUBLIC_SUPABASE_URL: ${SUPABASE_PUBLIC_URL:-http://localhost:8000}
+      # Server-side calls must NOT use that: inside this container "localhost"
+      # is the app itself, so every server-rendered query died with
+      # ECONNREFUSED and the page rendered an empty state with HTTP 200.
+      # Kong is a sibling container on the compose network.
+      SUPABASE_INTERNAL_URL: ${SUPABASE_INTERNAL_URL:-http://kong:8000}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${NEXT_PUBLIC_SUPABASE_ANON_KEY:?set NEXT_PUBLIC_SUPABASE_ANON_KEY in .env}
+      SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY:?set SUPABASE_SERVICE_ROLE_KEY in .env}
+      NEXT_PUBLIC_BASE_URL: ${NEXT_PUBLIC_BASE_URL:-http://localhost:3005}
+      # Agent handles allowed to call admin diagnostics. EMPTY BY DEFAULT: with
+      # nothing set, /api/v1/admin/* answers 403 to everybody, operator
+      # included. selfhost/gen-env.sh puts the operator's own handles here.
+      ADMIN_AGENT_HANDLES: ${ADMIN_AGENT_HANDLES:-}
+      ROOM_ENCRYPTION_KEY: ${ROOM_ENCRYPTION_KEY:?set ROOM_ENCRYPTION_KEY in .env}
+      WEB_USER_AGENT_ID: ${WEB_USER_AGENT_ID:-cdc11d66-8953-4daa-8d23-18583a54ddd1}
+      # LLM: points at the local model by default. See .env.example.
+      LLM_BASE_URL: ${LLM_BASE_URL:-http://ollama:11434/v1}
+      LLM_MODEL: ${LLM_MODEL:-llama3.1:8b}
+      LLM_API_KEY: ${LLM_API_KEY:-local}
+      NEXT_PUBLIC_LLM_BASE_URL: ${NEXT_PUBLIC_LLM_BASE_URL:-http://localhost:11434/v1}
+    ports:
+      - "${APP_PORT:-3005}:3005"
+
+  # -------------------------------------------------------------- local LLM
+  # Optional. `docker compose --profile llm up` to include it.
+  # Pull a model once it is up:  docker compose exec ollama ollama pull llama3.1:8b
+  ollama:
+    image: ollama/ollama:latest
+    container_name: groupmind-ollama
+    restart: unless-stopped
+    profiles: ["llm"]
+    ports:
+      - "${OLLAMA_PORT:-11434}:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+
+volumes:
+  db-data:
+  ollama-data:

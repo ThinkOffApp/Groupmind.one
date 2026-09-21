@@ -1,0 +1,154 @@
+import { NextResponse } from 'next/server';
+import { getServiceSupabase } from '@/lib/supabase-service';
+import { WEB_USER_AGENT_ID } from '@/lib/web-agent';
+
+const supabase = getServiceSupabase();
+
+type RouteParams = { params: Promise<{ room: string }> };
+
+export async function GET(request: Request, { params }: RouteParams) {
+    try {
+        const { room: roomSlug } = await params;
+
+        // Find room by slug
+        const { data: room } = await supabase
+            .from('rooms')
+            .select('id')
+            .eq('slug', roomSlug)
+            .single();
+
+        if (!room) return NextResponse.json({ error: 'Room not found' }, { status: 404 });
+
+        // Find the latest document state message
+        const { data: messages, error } = await supabase
+            .from('messages')
+            .select('body, created_at')
+            .eq('room_id', room.id)
+            .not('metadata', 'is', null)
+            .contains('metadata', { is_document_state: true })
+            .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        // Cleanup duplicate states if they exist
+        if (messages && messages.length > 1) {
+            const idsToDelete = messages.slice(1).map((m: any) => m.id);
+            await supabase.from('messages').delete().in('id', idsToDelete);
+        }
+
+        return NextResponse.json({
+            content: messages && messages.length > 0 ? messages[0].body : '',
+            updated_at: messages && messages.length > 0 ? messages[0].created_at : null
+        });
+
+    } catch (error) {
+        console.error('Error fetching document:', error);
+        return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    }
+}
+
+export async function POST(request: Request, { params }: RouteParams) {
+    try {
+        const { room: roomSlug } = await params;
+        const body = await request.json().catch(() => null);
+
+        if (!body || typeof body.content !== 'string') {
+            return NextResponse.json({ error: 'Invalid document content' }, { status: 400 });
+        }
+
+        const { data: room } = await supabase
+            .from('rooms')
+            .select('id')
+            .eq('slug', roomSlug)
+            .single();
+
+        if (!room) return NextResponse.json({ error: 'Room not found' }, { status: 404 });
+
+        // Find existing document state to update
+        const { data: existingDocs, error: findError } = await supabase
+            .from('messages')
+            .select('id, created_at')
+            .eq('room_id', room.id)
+            .not('metadata', 'is', null)
+            .contains('metadata', { is_document_state: true })
+            .order('created_at', { ascending: false });
+
+        if (findError) throw findError;
+
+        const existingDoc = existingDocs && existingDocs.length > 0 ? existingDocs[0] : null;
+        const existingDocId = existingDoc ? existingDoc.id : null;
+
+        // Cleanup duplicate states if they were created by concurrent inserts
+        if (existingDocs && existingDocs.length > 1) {
+            const idsToDelete = existingDocs.slice(1).map((m: any) => m.id);
+            await supabase.from('messages').delete().in('id', idsToDelete);
+        }
+
+        // Version check to prevent lost-update races
+        if (existingDoc && body.last_saved_at && body.action !== 'archive_and_empty') {
+            const dbTime = new Date(existingDoc.created_at).getTime();
+            const clientTime = new Date(body.last_saved_at).getTime();
+            if (dbTime > clientTime) {
+                return NextResponse.json({ error: 'Conflict: Document was modified by someone else.' }, { status: 409 });
+            }
+        }
+
+        if (body.action === 'archive_and_empty') {
+            // Save current content as an archive
+            const { error: archiveError } = await supabase
+                .from('messages')
+                .insert({
+                    room_id: room.id,
+                    from_agent_id: WEB_USER_AGENT_ID,
+                    body: body.content || '(empty)',
+                    metadata: { is_document_archive: true }
+                });
+            if (archiveError) throw archiveError;
+
+            // Clear the live document state
+            if (existingDocId) {
+                const { error: clearError } = await supabase
+                    .from('messages')
+                    .update({ body: '' })
+                    .eq('id', existingDocId);
+                if (clearError) throw clearError;
+            } else {
+                const { error: clearError } = await supabase
+                    .from('messages')
+                    .insert({
+                        room_id: room.id,
+                        from_agent_id: WEB_USER_AGENT_ID,
+                        body: '',
+                        metadata: { is_document_state: true }
+                    });
+                if (clearError) throw clearError;
+            }
+
+            return NextResponse.json({ success: true, cleared: true });
+        }
+
+        // Normal save
+        if (existingDocId) {
+            const { error: updateError } = await supabase
+                .from('messages')
+                .update({ body: body.content, created_at: new Date().toISOString() })
+                .eq('id', existingDocId);
+            if (updateError) throw updateError;
+        } else {
+            const { error: insertError } = await supabase
+                .from('messages')
+                .insert({
+                    room_id: room.id,
+                    from_agent_id: WEB_USER_AGENT_ID, // Use system/web agent id to avoid breaking schema
+                    body: body.content,
+                    metadata: { is_document_state: true }
+                });
+            if (insertError) throw insertError;
+        }
+
+        return NextResponse.json({ success: true });
+    } catch (error) {
+        console.error('Error saving document:', error);
+        return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    }
+}

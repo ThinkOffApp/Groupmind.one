@@ -1,0 +1,33 @@
+# Keeps the build context small and keeps secrets out of the image layers.
+#
+# Without this file `COPY . .` shipped ~700 MB - including the HOST's
+# node_modules (wrong platform, straight over the `npm ci` output that the
+# layer above had just installed) and a generated .env. The .env would then
+# live in the builder layer forever.
+
+.git
+.gitignore
+node_modules
+.next
+out
+build
+
+# Local secrets. .env.example is the only one that should ever be readable.
+.env
+.env.*
+!.env.example
+
+npm-debug.log*
+yarn-error.log*
+*.log
+
+.DS_Store
+.vscode
+.idea
+
+# Not part of the web app image.
+android
+ios
+supabase/.temp
+.vercel
+coverage

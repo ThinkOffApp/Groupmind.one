@@ -1,0 +1,105 @@
+@import "tailwindcss";
+
+:root {
+  /* Base backgrounds */
+  --background: #000000;
+  --foreground: #ffffff;
+  --card-bg: #0a0a0a;
+  --border: rgba(255, 255, 255, 0.1);
+
+  /* ThinkOff Dark Theme Colors */
+  --bg-dark: #0A0A0A;
+  --bg-card: #1E1E1E;
+  --bg-card-hover: #252525;
+  --bg-surface: #121212;
+
+  /* Text */
+  --text-primary: #FFFFFF;
+  --text-secondary: #B0B0B0;
+
+  /* Accent Colors - from the pink rainbow heart logo */
+  --primary: #FF77FF;
+  --primary-dark: #FF00FF;
+
+  /* Heart color palette accents */
+  --accent-lightpink: #FFAADD;
+  --accent-fuchsia: #FF77FF;
+  --accent-hotpink: #FF00FF;
+  --accent-magenta: #CC00CC;
+  --accent-orange: #FF9900;
+  --accent-yellow: #FFDD00;
+  --accent-lime: #99DD00;
+  --accent-green: #55AA00;
+
+  --accent-gradient: linear-gradient(135deg, #FF77FF 0%, #FF00FF 100%);
+
+  /* Badges */
+  --rank-gold: #FCD34D;
+  --rank-silver: #D1D5DB;
+  --rank-bronze: #F59E0B;
+
+  /* UI Effects */
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --card-radius: 24px;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Line clamp utilities */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.heart-logo-img {
+    animation: neon-pulse 3s ease-in-out infinite;
+    filter: drop-shadow(0 0 20px rgba(212, 165, 233, 0.4));
+}
+
+@keyframes neon-pulse {
+    0%, 100% {
+        filter: drop-shadow(0 0 20px rgba(212, 165, 233, 0.4));
+        transform: scale(1);
+    }
+    50% {
+        filter: drop-shadow(0 0 35px rgba(212, 165, 233, 0.7));
+        transform: scale(1.05);
+    }
+}
+
