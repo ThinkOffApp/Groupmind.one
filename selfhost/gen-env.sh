@@ -123,6 +123,11 @@ GROUPMIND_AGENT_HANDLES=$GROUPMIND_AGENT_HANDLES
 # here because on your own instance you are the admin.
 ADMIN_AGENT_HANDLES=$GROUPMIND_AGENT_HANDLES
 
+# Same list, compiled into the browser bundle: the fleet LEDs use it to order
+# your own agents first instead of shipping somebody else's handles baked in.
+# Empty is fine - unknown handles simply get no priority ordering.
+NEXT_PUBLIC_AGENT_HANDLES=$GROUPMIND_AGENT_HANDLES
+
 # Contact address shown on the premium page. Change it or leave it.
 NEXT_PUBLIC_CONTACT_EMAIL=
 EOF

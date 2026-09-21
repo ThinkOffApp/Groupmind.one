@@ -221,6 +221,7 @@ services:
         NEXT_PUBLIC_SUPABASE_ANON_KEY: ${NEXT_PUBLIC_SUPABASE_ANON_KEY}
         NEXT_PUBLIC_BASE_URL: ${NEXT_PUBLIC_BASE_URL:-http://localhost:3005}
         NEXT_PUBLIC_CONTACT_EMAIL: ${NEXT_PUBLIC_CONTACT_EMAIL:-}
+        NEXT_PUBLIC_AGENT_HANDLES: ${NEXT_PUBLIC_AGENT_HANDLES:-}
     container_name: groupmind-app
     restart: unless-stopped
     depends_on:
@@ -244,6 +245,7 @@ services:
       # nothing set, /api/v1/admin/* answers 403 to everybody, operator
       # included. selfhost/gen-env.sh puts the operator's own handles here.
       ADMIN_AGENT_HANDLES: ${ADMIN_AGENT_HANDLES:-}
+      NEXT_PUBLIC_AGENT_HANDLES: ${NEXT_PUBLIC_AGENT_HANDLES:-}
       ROOM_ENCRYPTION_KEY: ${ROOM_ENCRYPTION_KEY:?set ROOM_ENCRYPTION_KEY in .env}
       WEB_USER_AGENT_ID: ${WEB_USER_AGENT_ID:-cdc11d66-8953-4daa-8d23-18583a54ddd1}
       # LLM: points at the local model by default. See .env.example.

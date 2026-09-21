@@ -8,8 +8,16 @@ import { createClient } from '@/lib/supabase-browser';
 
 // Handles we want a slot for even when they are not publishing, so a silent
 // agent is visibly silent rather than absent. These must match the ids the
-// publishers actually use: "codexmb" publishes under that name, not "codex".
-const PRIORITY: string[] = ['claudemm', 'claudemb', 'grok', 'codexmb', 'antigravity', 'ether'];
+// publishers actually use (e.g. "codexmb" publishes under that name, not
+// "codex"), so the order comes from this install's own configuration
+// instead of a hardcoded fleet: selfhost/gen-env.sh writes the operator's
+// agent handles into NEXT_PUBLIC_AGENT_HANDLES (same list, comma-separated,
+// as GROUPMIND_AGENT_HANDLES/ADMIN_AGENT_HANDLES). An unconfigured instance
+// gets an empty list, so unknown handles simply get no priority ordering.
+const PRIORITY: string[] = (process.env.NEXT_PUBLIC_AGENT_HANDLES || '')
+    .split(',')
+    .map((h) => h.trim())
+    .filter(Boolean);
 const MAX_SLOTS = 6;
 const POLL_MS = 30_000;
 
