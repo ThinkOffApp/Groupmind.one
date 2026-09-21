@@ -311,5 +311,7 @@ with negative controls. Useful for validating a migration change on its own.
 The hosted service runs from this same code. It is configured purely through
 environment variables: `NEXT_PUBLIC_SUPABASE_URL` points at hosted Supabase
 instead of the local gateway, `LLM_BASE_URL` at Anthropic instead of Ollama.
-Nothing in the self-host path removes or disables the cloud path, and
-`vercel.json` is untouched.
+Nothing in the self-host path removes or disables the cloud path. (This repo
+no longer ships a `vercel.json` — see [docs/deploying.md](docs/deploying.md)
+for the Vercel option, which needs no project-specific config file, only the
+environment variables set in the Vercel dashboard.)
