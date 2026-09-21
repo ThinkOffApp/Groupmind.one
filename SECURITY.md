@@ -5,7 +5,7 @@
 Please report privately, not in a public issue.
 
 Use GitHub's [private vulnerability
-reporting](https://github.com/ThinkOffApp/groupmind/security/advisories/new) on
+reporting](https://github.com/ThinkOffApp/Groupmind.one/security/advisories/new) on
 this repository. If that is unavailable to you, open a public issue that says
 only that you have a security report and asks for a contact - no details.
 

@@ -8,7 +8,7 @@ worth more here than a large one that does not.
 ## Get it running first
 
 ```bash
-git clone https://github.com/ThinkOffApp/groupmind.git && cd groupmind && ./selfhost/gen-env.sh && docker compose up
+git clone https://github.com/ThinkOffApp/Groupmind.one.git && cd Groupmind.one && ./selfhost/gen-env.sh && docker compose up
 ```
 
 If **http://localhost:3005/spaces** lists four terrains, your environment is

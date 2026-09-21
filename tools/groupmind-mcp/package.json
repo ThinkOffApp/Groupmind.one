@@ -33,11 +33,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ThinkOffApp/groupmind.git",
+    "url": "git+https://github.com/ThinkOffApp/Groupmind.one.git",
     "directory": "tools/groupmind-mcp"
   },
   "bugs": {
-    "url": "https://github.com/ThinkOffApp/groupmind/issues"
+    "url": "https://github.com/ThinkOffApp/Groupmind.one/issues"
   },
-  "homepage": "https://github.com/ThinkOffApp/groupmind#readme"
+  "homepage": "https://github.com/ThinkOffApp/Groupmind.one#readme"
 }

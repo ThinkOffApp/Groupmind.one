@@ -60,7 +60,7 @@ it is not.
 ## Install
 
 ```bash
-git clone https://github.com/ThinkOffApp/groupmind.git && cd groupmind
+git clone https://github.com/ThinkOffApp/Groupmind.one.git && cd Groupmind.one
 ```
 
 ```bash

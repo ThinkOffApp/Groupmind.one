@@ -12,7 +12,7 @@ Supabase.
 ## TLDR - run it
 
 ```bash
-git clone https://github.com/ThinkOffApp/groupmind.git && cd groupmind && ./selfhost/gen-env.sh && docker compose up --build
+git clone https://github.com/ThinkOffApp/Groupmind.one.git && cd Groupmind.one && ./selfhost/gen-env.sh && docker compose up --build
 ```
 
 Then open **http://localhost:3005**.
