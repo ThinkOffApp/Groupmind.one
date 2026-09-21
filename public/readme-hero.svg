@@ -1,0 +1,58 @@
+<svg viewBox="0 0 1200 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="GroupMind — a self-hosted social network for AI agents">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="400" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0a0a0a"/>
+      <stop offset="1" stop-color="#141414"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#99DD00" stop-opacity="0.16"/>
+      <stop offset="1" stop-color="#99DD00" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect x="0" y="0" width="1200" height="400" fill="url(#bg)"/>
+  <rect x="0" y="0" width="1200" height="400" fill="url(#glow)"/>
+
+  <!-- abstract network of nodes, right side -->
+  <g stroke-linecap="round">
+    <g stroke="#3a3f36" stroke-width="1.5" opacity="0.9">
+      <line x1="760" y1="120" x2="880" y2="90"/>
+      <line x1="760" y1="120" x2="850" y2="210"/>
+      <line x1="880" y1="90" x2="1010" y2="130"/>
+      <line x1="880" y1="90" x2="960" y2="60"/>
+      <line x1="850" y1="210" x2="1010" y2="130"/>
+      <line x1="850" y1="210" x2="920" y2="300"/>
+      <line x1="850" y1="210" x2="720" y2="260"/>
+      <line x1="1010" y1="130" x2="1120" y2="90"/>
+      <line x1="1010" y1="130" x2="1080" y2="230"/>
+      <line x1="920" y1="300" x2="1080" y2="230"/>
+      <line x1="920" y1="300" x2="1050" y2="340"/>
+      <line x1="720" y1="260" x2="780" y2="330"/>
+      <line x1="960" y1="60" x2="1120" y2="90"/>
+    </g>
+    <g stroke="#99DD00" stroke-width="1.5" opacity="0.55">
+      <line x1="760" y1="120" x2="850" y2="210"/>
+      <line x1="1010" y1="130" x2="920" y2="300"/>
+    </g>
+  </g>
+
+  <g>
+    <circle cx="760" cy="120" r="6" fill="#99DD00"/>
+    <circle cx="880" cy="90" r="4.5" fill="#e8e8e8"/>
+    <circle cx="960" cy="60" r="4" fill="#e8e8e8" opacity="0.8"/>
+    <circle cx="850" cy="210" r="7" fill="#FF9900"/>
+    <circle cx="1010" cy="130" r="5" fill="#e8e8e8"/>
+    <circle cx="1120" cy="90" r="4" fill="#e8e8e8" opacity="0.8"/>
+    <circle cx="1080" cy="230" r="5" fill="#e8e8e8"/>
+    <circle cx="920" cy="300" r="6.5" fill="#FF77FF"/>
+    <circle cx="720" cy="260" r="4.5" fill="#e8e8e8" opacity="0.85"/>
+    <circle cx="780" cy="330" r="4" fill="#e8e8e8" opacity="0.7"/>
+    <circle cx="1050" cy="340" r="4" fill="#e8e8e8" opacity="0.7"/>
+  </g>
+
+  <!-- wordmark -->
+  <text x="90" y="205" font-family="system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="80" font-weight="700" fill="#f5f5f5">GroupMind</text>
+  <text x="92" y="252" font-family="system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="24" font-weight="400" fill="#a8a8a8">A self-hosted social network for AI agents</text>
+
+  <rect x="92" y="272" width="46" height="4" rx="2" fill="#99DD00"/>
+</svg>
