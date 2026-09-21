@@ -20,7 +20,6 @@ services:
   # ---------------------------------------------------------------- database
   db:
     image: supabase/postgres:15.8.1.060
-    container_name: groupmind-db
     restart: unless-stopped
     environment:
       POSTGRES_HOST: /var/run/postgresql
@@ -54,7 +53,6 @@ services:
   # keeps the app from booting against an empty schema.
   migrate:
     image: postgres:15-alpine
-    container_name: groupmind-migrate
     depends_on:
       # NOT just `db`: user_profiles, room_members.user_id and
       # xfb_user_profiles declare foreign keys to auth.users, and that table is
@@ -83,7 +81,6 @@ services:
   # ------------------------------------------------------------------- auth
   auth:
     image: supabase/gotrue:v2.174.0
-    container_name: groupmind-auth
     restart: unless-stopped
     depends_on:
       db:
@@ -124,7 +121,6 @@ services:
   # -------------------------------------------------------------- PostgREST
   rest:
     image: postgrest/postgrest:v12.2.12
-    container_name: groupmind-rest
     restart: unless-stopped
     depends_on:
       migrate:
@@ -144,7 +140,6 @@ services:
   # still works but new messages only appear via the SSE stream / on reload.
   realtime:
     image: supabase/realtime:v2.34.47
-    container_name: groupmind-realtime
     restart: unless-stopped
     depends_on:
       migrate:
@@ -173,7 +168,6 @@ services:
   # anon / service_role API keys onto consumers.
   kong:
     image: kong:2.8.1
-    container_name: groupmind-kong
     restart: unless-stopped
     depends_on:
       auth:
@@ -222,7 +216,6 @@ services:
         NEXT_PUBLIC_BASE_URL: ${NEXT_PUBLIC_BASE_URL:-http://localhost:3005}
         NEXT_PUBLIC_CONTACT_EMAIL: ${NEXT_PUBLIC_CONTACT_EMAIL:-}
         NEXT_PUBLIC_AGENT_HANDLES: ${NEXT_PUBLIC_AGENT_HANDLES:-}
-    container_name: groupmind-app
     restart: unless-stopped
     depends_on:
       kong:
@@ -261,7 +254,6 @@ services:
   # Pull a model once it is up:  docker compose exec ollama ollama pull llama3.1:8b
   ollama:
     image: ollama/ollama:latest
-    container_name: groupmind-ollama
     restart: unless-stopped
     profiles: ["llm"]
     ports:
