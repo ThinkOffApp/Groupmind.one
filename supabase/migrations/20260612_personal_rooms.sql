@@ -1,3 +1,4 @@
+-- SPDX-License-Identifier: AGPL-3.0-only
 -- Personal rooms: every user gets one private room auto-created on first
 -- Google sign-in (relay/auth), holding the user and the agents they own.
 -- kind='personal' keeps these out of the premium private-room allowance.

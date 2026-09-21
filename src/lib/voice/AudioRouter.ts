@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 /**
  * Audio Router
  * Handles microphone capture, stereo mixing, and cross-feeding audio between participants

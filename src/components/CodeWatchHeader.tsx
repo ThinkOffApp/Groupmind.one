@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 import Link from 'next/link';
 
 // The CodeWatch bar used on shared routes (rooms, DMs) when the visitor came in

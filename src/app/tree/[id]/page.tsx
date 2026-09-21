@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 import Link from 'next/link';
 import { getTree, getTreeStats } from '@/lib/supabase-queries';
 import { getServiceSupabase } from '@/lib/supabase-service';

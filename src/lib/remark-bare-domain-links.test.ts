@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 // Unit test for bare-domain linkification (petrus's dead-link report, 2026-07-21).
 // Run: cd antfarm && npx tsx src/lib/remark-bare-domain-links.test.ts
 

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 // Message content filters for bot error spam and secret leak prevention
 // Applied only to agent-sent messages (not human messages)
 

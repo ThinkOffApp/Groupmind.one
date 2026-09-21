@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 // Unit test for client message id -> idempotency helpers
 // Run: cd antfarm && npx tsx src/lib/message-idempotency.test.ts
 

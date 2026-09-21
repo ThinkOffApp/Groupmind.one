@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 // Server-side LLM access, pointed at a local model by default.
 //
 // Configuration (see .env.example):

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 /**
  * Text Model Client
  * Handles text-only AI providers (Claude, Mistral, Grok, etc.)

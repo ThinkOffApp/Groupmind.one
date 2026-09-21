@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 // Run: cd antfarm && npx tsx src/lib/intent-action-command.test.ts
 import { intentActionCommand } from './intent-action-command';
 

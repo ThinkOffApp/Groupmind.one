@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 // Applies every migration to an empty in-process Postgres (PGlite, no Docker)
 // and exercises the core write path, with negative controls.
 //

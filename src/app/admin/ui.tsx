@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 // Shared server-rendered UI for the unified /admin area.
 // No client components here — admin data never leaves the server unrendered.
 

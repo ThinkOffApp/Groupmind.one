@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 /**
  * Multi-AI Voice Chat Orchestrator
  * Coordinates multiple AI participants in a real-time voice conversation

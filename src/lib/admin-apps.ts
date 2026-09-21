@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 // Registry of ThinkOff apps surfaced on the unified /admin overview.
 //
 // Adding a new app to the admin = ONE entry in ADMIN_APPS below. The overview

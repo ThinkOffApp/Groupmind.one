@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 /**
  * TurnManager - Centralized turn controller for multi-AI voice chat
  * 

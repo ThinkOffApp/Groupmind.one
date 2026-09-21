@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 // Unit test for the intent alias resolver (API-key reads merge handle + UUID docs)
 // Run: cd antfarm && npx tsx src/lib/intent-alias.test.ts
 

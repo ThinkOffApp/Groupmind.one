@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 // Regression tests for the room/DM sender-identity forgery (2026-09-19).
 // Run: cd antfarm && npx tsx src/lib/sender-identity.test.ts
 

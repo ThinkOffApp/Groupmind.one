@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 // Authenticated generic POST through the real handler: what actually lands in
 // the stored row (codexmb's last requested integration case).
 // Run:

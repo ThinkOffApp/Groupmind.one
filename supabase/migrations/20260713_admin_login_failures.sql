@@ -1,3 +1,4 @@
+-- SPDX-License-Identifier: AGPL-3.0-only
 -- Shared failed-login state for the /admin password gate.
 --
 -- The dashboard runs on serverless instances, so an in-memory counter is

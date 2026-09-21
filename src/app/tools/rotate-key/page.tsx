@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 'use client';
 
 // Owner-session primary-key rotation, from your phone. Runs entirely in the

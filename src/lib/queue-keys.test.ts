@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 // Unit test for the three-button queue model.
 // Run: npx tsx src/lib/queue-keys.test.ts
 //

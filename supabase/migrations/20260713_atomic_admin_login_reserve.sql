@@ -1,3 +1,4 @@
+-- SPDX-License-Identifier: AGPL-3.0-only
 -- Atomic admission for the /admin login rate limit.
 --
 -- WHY: the first cut of the limiter (20260713_admin_login_failures.sql +

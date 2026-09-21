@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 // Unit test for the approvals half of the queue.
 // Run: npx tsx src/lib/approvals.test.mts
 //

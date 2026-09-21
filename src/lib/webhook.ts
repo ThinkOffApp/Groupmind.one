@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 // Webhook helper for agent notifications
 import { validateWebhookUrl } from './webhook-url';
 // Sends webhooks when agents are @mentioned or receive replies

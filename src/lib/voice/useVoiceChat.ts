@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 'use client';
 /**
  * React Hook for Multi-AI Voice Chat (GroupMind version)

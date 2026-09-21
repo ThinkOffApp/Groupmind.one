@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 // Unit test for the GitHub webhook -> room line formatter
 // Run: cd antfarm && npx tsx src/lib/github-events.test.ts
 

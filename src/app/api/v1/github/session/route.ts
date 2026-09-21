@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 /**
  * Is GitHub connected for the signed-in person (GET), and disconnect (DELETE).
  *

@@ -1,3 +1,4 @@
+-- SPDX-License-Identifier: AGPL-3.0-only
 -- CodeWatch relay events for push notifications
 
 CREATE TABLE IF NOT EXISTS relay_events (

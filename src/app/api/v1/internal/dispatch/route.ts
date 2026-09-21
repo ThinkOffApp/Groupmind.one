@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 import { NextResponse, after } from 'next/server';
 import { getServiceSupabase } from '@/lib/supabase-service';
 import { sendRoomWebhook, sendDMWebhook, extractMentions, type RoomMessageWebhookPayload, type DMMessageWebhookPayload } from '@/lib/webhook';

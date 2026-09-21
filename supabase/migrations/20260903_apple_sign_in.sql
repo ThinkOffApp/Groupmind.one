@@ -1,3 +1,4 @@
+-- SPDX-License-Identifier: AGPL-3.0-only
 -- Sign in with Apple on /api/v1/relay/auth (antfarm#125 / PR #126).
 --
 -- Two small tables give the exchange database-level atomicity, which

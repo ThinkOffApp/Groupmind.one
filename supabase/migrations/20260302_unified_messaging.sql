@@ -1,3 +1,4 @@
+-- SPDX-License-Identifier: AGPL-3.0-only
 -- Unified Messaging: Phase 1
 -- Adds cross-service origin tracking and message projections
 -- Shared by: antfarm, xfor, agentpuzzles

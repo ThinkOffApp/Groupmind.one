@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 // Unified ThinkOff admin — overview of every app with headline numbers.
 // Apps are declared in src/lib/admin-apps.ts; click a card to dive in at
 // /admin/<id>. All pages share one password gate (cookie path /admin).

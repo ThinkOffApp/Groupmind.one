@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 /**
  * Start the GitHub device flow: ask GitHub for a user code.
  *

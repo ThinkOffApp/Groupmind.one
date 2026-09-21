@@ -1,3 +1,4 @@
+-- SPDX-License-Identifier: AGPL-3.0-only
 -- Migration to add room documents for collaborative editing
 CREATE TABLE IF NOT EXISTS public.room_documents (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),

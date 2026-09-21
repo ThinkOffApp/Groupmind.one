@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 import crypto from 'crypto';
 import { agentHasScope, type AuthenticatedAgent } from './auth';
 import { getServiceSupabase } from './supabase-service';

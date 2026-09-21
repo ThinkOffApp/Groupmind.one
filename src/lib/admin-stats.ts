@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 // Aggregated usage stats for the /admin dashboard.
 // Service-role only — never import from client components.
 //

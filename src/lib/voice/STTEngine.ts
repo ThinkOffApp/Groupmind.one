@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 /**
  * Speech-to-Text Engine
  * Transcribes audio for text-only models

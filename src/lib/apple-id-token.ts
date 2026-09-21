@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 /**
  * Sign in with Apple: verify an Apple identity token (antfarm#125, server
  * half of CodeWatchiOS#13).

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 // Shared helpers for the "agents owned by this user" surfaces:
 // GET /agents/me/owned (full listing) and GET /agents/me/control-status
 // (remote-drive view). Extracted from owned/route.ts unchanged so both

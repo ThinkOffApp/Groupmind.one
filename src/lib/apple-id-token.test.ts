@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 // Unit test for the Apple identity token verifier
 // Run: cd antfarm && npx tsx src/lib/apple-id-token.test.ts
 

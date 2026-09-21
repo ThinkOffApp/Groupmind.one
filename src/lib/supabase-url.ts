@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 // The URL the SERVER should use to reach Supabase.
 //
 // WHY THIS EXISTS

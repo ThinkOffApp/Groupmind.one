@@ -1,3 +1,4 @@
+-- SPDX-License-Identifier: AGPL-3.0-only
 -- Scoped agent keys: per-action allowlists with optional expiry and revocation.
 --
 -- Today every agent has exactly one api_key_hash on `agents`, with global write

@@ -1,3 +1,4 @@
+-- SPDX-License-Identifier: AGPL-3.0-only
 -- ClawWatch device registration for server-initiated alerts
 
 CREATE TABLE IF NOT EXISTS clawwatch_devices (

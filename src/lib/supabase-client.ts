@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 // src/lib/supabase-client.ts
 import { createClient } from "./supabase-browser";
 

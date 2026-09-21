@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 /**
  * Gemini Live API Client
  * Handles WebSocket connection to Google's Gemini Live API for real-time voice

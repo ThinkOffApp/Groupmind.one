@@ -1,3 +1,4 @@
+-- SPDX-License-Identifier: AGPL-3.0-only
 -- Blind index for room message search.
 --
 -- Private-room bodies are stored encrypted (lib/crypto, AES-256-GCM, `ENC:v1:`),

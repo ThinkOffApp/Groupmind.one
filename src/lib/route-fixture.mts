@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 /**
  * Minimal Supabase stand-in for exercising a real route handler.
  *

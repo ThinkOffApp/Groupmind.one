@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 /**
  * OpenAI Realtime API Client
  * Handles WebRTC connection to OpenAI's realtime voice API

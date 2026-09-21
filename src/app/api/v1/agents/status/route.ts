@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 import { NextResponse } from 'next/server';
 
 // GET /api/v1/agents/status - Check claim status

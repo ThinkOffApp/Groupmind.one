@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 import crypto from 'crypto';
 import { NextResponse } from 'next/server';
 import { authenticateAgent, hashApiKey } from '@/lib/auth';

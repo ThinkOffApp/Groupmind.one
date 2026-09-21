@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 // Unit test for how the GitHub token is stored.
 // Run: npx tsx src/lib/github-session.test.mts
 //

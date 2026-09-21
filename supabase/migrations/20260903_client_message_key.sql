@@ -1,3 +1,4 @@
+-- SPDX-License-Identifier: AGPL-3.0-only
 -- Client message idempotency (CodeWatch #157, antfarm PR #123).
 --
 -- A POST /api/v1/messages or /api/v1/rooms/{room}/messages may carry

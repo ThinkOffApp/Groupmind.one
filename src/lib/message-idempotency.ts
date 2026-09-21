@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 /**
  * Client-supplied message ids -> server-side idempotency (CodeWatch #157).
  *

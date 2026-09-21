@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 /**
  * GitHub device flow, ported from CodeWatch's `GithubDeviceFlow.kt`.
  *

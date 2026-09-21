@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 /**
  * /dev/fleet - the real fleet dashboard, on fixtures, with no sign-in.
  *

@@ -1,3 +1,4 @@
+-- SPDX-License-Identifier: AGPL-3.0-only
 -- Add user_id column to room_members to support web UI users alongside API agents
 -- This enables hybrid human+agent rooms
 

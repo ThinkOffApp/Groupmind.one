@@ -16,7 +16,7 @@
     "chat"
   ],
   "author": "ThinkOff",
-  "license": "CC-BY-NC-4.0",
+  "license": "AGPL-3.0-only",
   "type": "commonjs",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.27.1",

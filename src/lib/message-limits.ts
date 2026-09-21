@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 // One body limit for every way a message enters a room.
 //
 // POST /api/v1/rooms/{room}/messages (the CodeWatch app's path) refused

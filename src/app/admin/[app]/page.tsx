@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 // Generic dive-in page for registry apps without a bespoke dashboard
 // (remote-sourced apps). Renders whatever headline tiles and sections the
 // app's stats endpoint returns — see the JSON contract in src/lib/admin-apps.ts.

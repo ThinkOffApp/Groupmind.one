@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 import { getAgents } from '@/lib/supabase-queries';
 import UsersClient from './UsersClient';
 

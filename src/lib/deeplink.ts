@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 // Deeplink validation for remote-drive registrations (agents/me/remote).
 //
 // The registered value becomes a TAPPABLE BUTTON in CodeWatch, so this is a

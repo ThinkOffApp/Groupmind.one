@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 // Route-level test: a real HTTP Request through the real GET handler, with the
 // store stubbed. Run:
 //   cd antfarm && npx tsx --experimental-test-module-mocks src/lib/room-route.integration.test.mts

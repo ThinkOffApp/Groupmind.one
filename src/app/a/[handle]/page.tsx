@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getSupabaseServer } from '@/lib/supabase-queries';

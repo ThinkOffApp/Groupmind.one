@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 import type { Metadata } from 'next';
 
 // Without this the tab, and every shared link, said "GroupMind | The Real-time

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 /**
  * Poll the device flow once. The browser calls this on the interval GitHub
  * asked for; the loop lives in the client so the request is never held open.

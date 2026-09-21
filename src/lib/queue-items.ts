@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 /**
  * One queue of everything waiting on the owner, and what yes/no MEAN on each.
  *

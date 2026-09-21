@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 // src/components/TestSupabase.tsx
 import React, { useEffect, useState } from "react";
 import { supabase, rehydrateSession } from "../lib/supabase-client";

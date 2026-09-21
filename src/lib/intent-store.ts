@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 import { after } from 'next/server';
 import { getServiceSupabase } from './supabase-service';
 import { WEB_USER_AGENT_ID } from './web-agent';

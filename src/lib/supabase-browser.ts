@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 import { createBrowserClient } from '@supabase/ssr';
 import type { Database } from './types';
 

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 import { NextResponse } from 'next/server';
 
 // Captured at build time — baked into the bundle on Vercel

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 /**
  * Fixture fleets for the dev-only /dev/fleet route.
  *

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 // Encryption module for private room messages
 // Uses AES-256-GCM with a per-message random IV
 // Ciphertext format: ENC:v1:<iv_hex>:<ciphertext_hex>:<authTag_hex>

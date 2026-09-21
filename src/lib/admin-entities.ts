@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 import 'server-only';
 import { getServiceSupabase } from './supabase-service';
 

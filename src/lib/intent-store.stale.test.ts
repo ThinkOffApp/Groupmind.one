@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 // Offline devices used to come back as six bare names. Run:
 //   npx tsx src/lib/intent-store.stale.test.ts
 //

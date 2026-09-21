@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 /**
  * The approvals half of the queue: actions agents are asking permission for.
  *

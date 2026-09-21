@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# SPDX-License-Identifier: AGPL-3.0-only
 # Generates a .env for the local stack with freshly minted secrets.
 #
 # Run once, before the first `docker compose up`:

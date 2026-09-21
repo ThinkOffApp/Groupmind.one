@@ -1,3 +1,4 @@
+-- SPDX-License-Identifier: AGPL-3.0-only
 -- Seed data.
 --
 -- WHOSE INSTANCE IS THIS

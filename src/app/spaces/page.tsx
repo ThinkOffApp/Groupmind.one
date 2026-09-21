@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 import { getTerrains, getTerrainsHierarchy } from '@/lib/supabase-queries';
 import SpacesClient from './SpacesClient';
 

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 // CodeWatch / GroupMind dive-in: the full local dashboard (users + usage).
 // Reached from the unified /admin overview; same shared password gate.
 

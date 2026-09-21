@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 /**
  * Whose identity a stored message row is allowed to claim.
  *

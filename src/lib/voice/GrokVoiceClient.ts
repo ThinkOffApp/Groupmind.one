@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 // GrokVoiceClient.ts
 // xAI Grok Voice Agent API WebSocket client for ThinkOff
 // Supports real-time bidirectional audio streaming and event handling

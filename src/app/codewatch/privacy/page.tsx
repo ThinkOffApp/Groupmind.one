@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 export const metadata = {
     title: 'CodeWatch Privacy Policy',
     description: 'Privacy policy for the CodeWatch IDE notification app',

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 /**
  * Multi-AI Voice Chat Types
  * Types for real-time voice conversations with multiple AI models

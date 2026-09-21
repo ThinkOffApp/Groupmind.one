@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: AGPL-3.0-only
 # Applies the repo's SQL migrations to the local Postgres, once each.
 #
 # Order matters and is NOT plain alphabetical across the two directories:

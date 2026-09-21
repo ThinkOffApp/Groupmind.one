@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 // remark plugin: linkify bare domains (console.cloud.google.com/x) that
 // remark-gfm autolink literals ignore — GFM only fires on URLs starting with
 // a scheme (https://) or www. Agents and humans both paste protocol-less

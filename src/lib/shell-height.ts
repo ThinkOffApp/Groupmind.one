@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 // The room column's height, as arithmetic and a decision, with no DOM in it.
 //
 // The room screen measures the viewport left over around the chat column and

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 import { NextResponse, after } from 'next/server';
 import { extractApiKey, getAgentByApiKey } from '@/lib/auth';
 import { getServiceSupabase } from '@/lib/supabase-service';

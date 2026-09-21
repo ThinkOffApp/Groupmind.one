@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 // Unit test for the fleet roster: case-duplicate agents, placeholder
 // registrations, and counts that cannot drift from the rendered list.
 // Run: npx tsx src/lib/fleet-roster.test.ts

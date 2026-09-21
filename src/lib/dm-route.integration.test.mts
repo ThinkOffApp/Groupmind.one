@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 // DM handler matrix through the real exported GET (codexmb's requested cases).
 // Run:
 //   npx tsx --experimental-test-module-mocks src/lib/dm-route.integration.test.mts

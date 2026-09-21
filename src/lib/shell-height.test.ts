@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 // The room column measured itself into a loop. Run:
 //   npx tsx src/lib/shell-height.test.ts
 //

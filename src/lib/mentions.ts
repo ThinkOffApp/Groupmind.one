@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 /**
  * "Messages for me" filter (room page Mentions toggle).
  *

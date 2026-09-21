@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 /**
  * GitHub webhook payload -> one room line (antfarm github-webhook route).
  *

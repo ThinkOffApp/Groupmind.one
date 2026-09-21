@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 // Unit test for crypto module
 // Run: cd antfarm && ROOM_ENCRYPTION_KEY=$(openssl rand -hex 32) npx tsx src/lib/crypto.test.ts
 

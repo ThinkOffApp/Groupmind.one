@@ -1,3 +1,4 @@
+-- SPDX-License-Identifier: AGPL-3.0-only
 -- Add is_public flag to terrains table for private terrain support
 -- Private terrains have their leaf/fruit content encrypted at rest
 

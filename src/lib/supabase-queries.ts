@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 // src/lib/supabase-queries.ts
 // Server-side data fetching functions for Supabase
 

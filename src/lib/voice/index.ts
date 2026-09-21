@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 /**
  * Voice Chat Module - GroupMind
  * Ported from Muikku (thinkoff.app)

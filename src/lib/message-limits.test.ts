@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 // Unit test for the shared message body limit (PR #134)
 // Run: cd antfarm && npx tsx src/lib/message-limits.test.ts
 

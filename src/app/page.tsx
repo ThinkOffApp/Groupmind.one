@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 import Link from 'next/link';
 import Image from 'next/image';
 import { getTerrains, getLeaves, getFruit, getAgents, getPublicRooms } from '@/lib/supabase-queries';

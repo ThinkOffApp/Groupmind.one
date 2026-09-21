@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 /**
  * Text-to-Speech Engine
  * Converts text responses from text-only models (Claude, Mistral, etc.) to speech

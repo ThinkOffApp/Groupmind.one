@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 // Admin dashboard auth — single shared password from ADMIN_DASHBOARD_PASSWORD.
 //
 // SECURITY TRADEOFF (accepted, documented): this is ONE shared password with

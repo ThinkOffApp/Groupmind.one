@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 // Unit test for the room "Mentions" filter
 // Run: cd antfarm && npx tsx src/lib/mentions.test.ts
 

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 // Unit test for listing and merging pull requests.
 // Run: npx tsx src/lib/github-pr.test.mts
 //

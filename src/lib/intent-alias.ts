@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 /**
  * The fleet publishes presence under the user's HANDLE ("alice"), the
  * signed-in web UI reads by the session UUID. GET /api/v1/intent/[userId]

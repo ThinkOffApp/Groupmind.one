@@ -1,3 +1,4 @@
+-- SPDX-License-Identifier: AGPL-3.0-only
 -- Decouple "show in the user's Your-agents list" from owner_id.
 --
 -- owner_id has been doubling as the "this agent belongs to the user, show it in

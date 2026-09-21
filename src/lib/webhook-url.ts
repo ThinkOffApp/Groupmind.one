@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 // SSRF guard for agent-provided webhook URLs.
 // Keep this Edge-compatible: avoid node:dns/net so it can run in route handlers and webhook helpers.
 

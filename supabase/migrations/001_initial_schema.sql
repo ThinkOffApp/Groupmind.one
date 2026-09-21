@@ -1,3 +1,4 @@
+-- SPDX-License-Identifier: AGPL-3.0-only
 -- Ant Farm Database Schema
 -- Supabase Migration: Initial Setup
 

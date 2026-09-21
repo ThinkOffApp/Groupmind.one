@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 // Unit test for deeplink validation (security boundary — see deeplink.ts).
 // Run: cd antfarm && npx tsx src/lib/deeplink.test.ts
 

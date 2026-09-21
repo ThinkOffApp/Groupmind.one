@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 // DB-backed, ATOMIC rate limiting for the /admin login action.
 //
 // WHY THE DATABASE: this app runs on serverless instances, so per-instance

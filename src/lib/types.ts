@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 // Database types for GroupMind
 
 export type TreeStatus = 'growing' | 'dormant' | 'archived';

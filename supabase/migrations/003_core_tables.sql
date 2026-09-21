@@ -1,3 +1,4 @@
+-- SPDX-License-Identifier: AGPL-3.0-only
 -- Core tables that the application queries but that no migration ever created.
 --
 -- WHY THIS FILE EXISTS

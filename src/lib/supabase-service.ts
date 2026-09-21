@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import { serverSupabaseUrl } from './supabase-url';
 

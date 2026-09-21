@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 /**
  * Multi-AI Voice Chat - Extended Version
  * Supports ALL models including text-only providers with STT/TTS

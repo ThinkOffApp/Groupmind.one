@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 // Route-level test: real HTTP Requests through the real route handlers, with
 // the session, GitHub and the approvals store stubbed. Run:
 //   npx tsx --experimental-test-module-mocks src/lib/queue-route.integration.test.mts

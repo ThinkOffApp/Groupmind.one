@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 /**
  * Listing and merging GitHub pull requests, ported from CodeWatch's
  * `DashboardRepository` (`OpenPr`, `fetchOpenPrs`, `listOpenPrs`, `mergePr`).

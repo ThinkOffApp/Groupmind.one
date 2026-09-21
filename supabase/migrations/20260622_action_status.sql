@@ -1,3 +1,4 @@
+-- SPDX-License-Identifier: AGPL-3.0-only
 -- Central action-status store for CodeWatch approval buttons.
 --
 -- Today the live status of an intent (pending → approved/denied → executed)
