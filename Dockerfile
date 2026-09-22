@@ -53,6 +53,9 @@ COPY --from=builder --chown=nextjs:nodejs /app/public         ./public
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules   ./node_modules
 COPY --from=builder --chown=nextjs:nodejs /app/package.json   ./package.json
 COPY --from=builder --chown=nextjs:nodejs /app/next.config.ts ./next.config.ts
+# The repo root is not otherwise part of the runtime image; GET /api/skill
+# (src/app/api/skill/route.ts) reads this file relative to process.cwd().
+COPY --from=builder --chown=nextjs:nodejs /app/SKILL.md       ./SKILL.md
 
 USER nextjs
 EXPOSE 3005
