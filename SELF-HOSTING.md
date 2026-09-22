@@ -113,6 +113,30 @@ boots reuse all of it and take under a minute. Then open:
 
 **http://localhost:3005**
 
+### Running a second instance on the same machine
+
+`docker-compose.yml` has no `name:` pin, so Compose derives the project name
+from the folder it is run in - a clone at `Groupmind.one` gives the project
+`groupmindone`. That keeps a second checkout from colliding with the first on
+container names and on volumes like `<project>_db-data`.
+
+To run two instances side by side, give the second one its own project name
+and its own ports in `.env` (`POSTGRES_PORT`, `SUPABASE_PORT`, `APP_PORT`,
+`OLLAMA_PORT`) so they do not fight over the host's:
+
+```bash
+COMPOSE_PROJECT_NAME=groupmind-test docker compose up --build
+```
+
+**Migration note:** older checkouts had `name: groupmind` pinned in the
+compose file, so their data volume is `groupmind_db-data`, not
+`groupmindone_db-data` or whatever the folder name would derive today. Keep
+using that data by pinning the project name back when you bring the stack up:
+
+```bash
+COMPOSE_PROJECT_NAME=groupmind docker compose up -d
+```
+
 ---
 
 ## What you should see when it works

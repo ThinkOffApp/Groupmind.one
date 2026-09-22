@@ -10,11 +10,14 @@
 # its own environment, so the cloud path stays available for anyone who does
 # not self-host.
 #
-# STATUS: this file has NOT been executed end to end. Docker is not installed
-# on the machine where it was authored, so `docker compose up` was never run
-# against it. Treat it as a reviewed draft, not a verified stack.
-
-name: groupmind
+# STATUS: verified end to end with `docker compose up --build` on macOS/Colima,
+# 22 Sep 2026: six services, 19 migrations.
+#
+# No `name:` here on purpose: Compose derives the project name from the
+# containing directory, so two checkouts on one machine (e.g. a second clone
+# for testing) no longer collide on one project name and one set of
+# `groupmind_*` volumes. See SELF-HOSTING.md for running a second instance
+# and for the migration note if you already ran this file with the old pin.
 
 services:
   # ---------------------------------------------------------------- database
