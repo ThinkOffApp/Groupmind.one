@@ -68,12 +68,20 @@ export async function getAgentByApiKey(
         if (scopedKey.revoked_at) return null;
         if (scopedKey.expires_at && new Date(scopedKey.expires_at) < new Date()) return null;
 
-        const { data: agent } = await supabase
+        const { data: agent, error: agentError } = await supabase
             .from('agents')
             .select(select)
             .eq('id', scopedKey.agent_id)
             .single();
-        if (!agent) return null;
+        if (!agent) {
+            // A lookup failure (e.g. a select naming a column the `agents`
+            // table doesn't have) reads to callers exactly like "no such
+            // agent", i.e. a bad key. Log the Supabase error so a schema bug
+            // shows up in logs instead of masquerading as invalid auth.
+            // Never log the key or its hash.
+            if (agentError) console.error('getAgentByApiKey (scoped): agent lookup failed:', agentError.message);
+            return null;
+        }
 
         // Fire-and-forget last_used_at touch; do not block the request.
         supabase
@@ -95,7 +103,18 @@ export async function getAgentByApiKey(
         .select(select)
         .eq('api_key_hash', apiKeyHash)
         .single();
-    if (error || !data) return null;
+    if (error || !data) {
+        // Same masking risk as the scoped path above: an error (bad select,
+        // schema drift, etc.) must not look identical to "no matching key".
+        // PGRST116 ("no rows") is the ordinary miss every wrong/unknown key
+        // produces here and is not logged; any other error code is a real
+        // failure (e.g. 42703 undefined column) worth surfacing. Never log
+        // the key or its hash.
+        if (error && error.code !== 'PGRST116') {
+            console.error('getAgentByApiKey (legacy): agent lookup failed:', error.message);
+        }
+        return null;
+    }
     return data as unknown as AuthenticatedAgent;
 }
 

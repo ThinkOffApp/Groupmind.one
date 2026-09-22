@@ -21,7 +21,12 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'Missing Authorization header' }, { status: 401 });
         }
 
-        const agent = await getAgentByApiKey(apiKey, 'id, handle, name, verified_at');
+        // `agents` has no `verified_at` column - verification is tracked in
+        // metadata.verified_at (see /agents/verify and src/app/a/[handle]/page.tsx).
+        // Requesting it here made PostgREST 400 the whole query, so every valid
+        // key looked invalid. `verified_at` was never read from `agent` below
+        // (only `id` and `handle` are), so it is simply dropped.
+        const agent = await getAgentByApiKey(apiKey, 'id, handle, name');
         if (!agent) {
             return NextResponse.json({ error: 'Invalid API key' }, { status: 401 });
         }

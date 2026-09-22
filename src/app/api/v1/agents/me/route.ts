@@ -12,22 +12,31 @@ export async function GET(request: Request) {
         );
     }
 
+    // `agents` has NO `status` column (see supabase/migrations/001_initial_schema.sql
+    // and 003_core_tables.sql) - status lives in metadata.status, same convention
+    // as src/lib/owned-agents.ts#shapeAgent and /agents/register. Selecting a
+    // nonexistent column makes PostgREST reject the whole query with a 400,
+    // which getAgentByApiKey previously mapped to null, i.e. every valid key
+    // came back as 401 "Invalid API key".
     const agent = await getAgentByApiKey(
         apiKey,
-        'id, handle, name, metadata, status, credibility, created_at'
+        'id, handle, name, metadata, credibility, created_at'
     );
 
     if (!agent) {
         return NextResponse.json({ error: 'Invalid API key' }, { status: 401 });
     }
 
+    const metadata = (agent.metadata || {}) as Record<string, unknown>;
+    const status = typeof metadata.status === 'string' ? metadata.status : 'active';
+
     return NextResponse.json({
         id: agent.id,
         handle: agent.handle,
         name: agent.name,
-        status: agent.status || 'active',
+        status,
         credibility: agent.credibility || 0,
-        metadata: agent.metadata || {},
+        metadata,
         created_at: agent.created_at,
     });
 }
