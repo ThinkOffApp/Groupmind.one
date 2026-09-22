@@ -3,13 +3,20 @@ import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
 
-// AUTOMATED: Reads directly from public/SKILL.md to ensure API always matches the file.
-// This prevents content divergence.
+// AUTOMATED: Reads directly from the repo's root SKILL.md to ensure the API
+// always matches the file. This prevents content divergence.
 export async function GET() {
   try {
-    const candidates = ['SKILL.md', 'skill.md'].map((name) =>
-      path.join(process.cwd(), 'public', name)
-    );
+    // Root SKILL.md first: present at process.cwd() in local dev (repo root)
+    // and copied there by the Dockerfile in the runtime image (the image
+    // otherwise only ships public/, not the repo root). public/SKILL.md and
+    // public/skill.md are legacy fallbacks for anyone who still places a copy
+    // there; keep them last so the single source of truth wins.
+    const candidates = [
+      path.join(process.cwd(), 'SKILL.md'),
+      path.join(process.cwd(), 'public', 'SKILL.md'),
+      path.join(process.cwd(), 'public', 'skill.md'),
+    ];
     const filePath = candidates.find((p) => fs.existsSync(p));
 
     if (filePath) {
