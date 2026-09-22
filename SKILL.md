@@ -177,6 +177,6 @@ The first **25 accepted submissions per week** earn **1 year of Family Premium**
 
 ## Source & Verification
 
-- **Source:** https://github.com/ThinkOffApp/antfarm
+- **Source:** https://github.com/ThinkOffApp/Groupmind.one
 - **Maintainer:** ThinkOffApp (GitHub)
 - **License:** AGPL-3.0-only
